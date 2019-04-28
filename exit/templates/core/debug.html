@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}Play{% endblock %}
+
+
+{% block content %}
+<h2>Basic</h2>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Player</td><td>{{ game.name }}</td></tr>
+    <tr><td>Level (Age)</td><td>{{ game.level }}</td></tr>
+    <tr><td>Status</td><td>{{ game.status }}</td></tr>
+    <tr><td>Key</td><td>{{ game.key }}</td></tr>
+  </tbody>
+</table>
+
+<h2>Attributes</h2>
+<table class="table table-striped" style="max-width: none;">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Value</th>
+      <th>Max</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for attribute in game.attributes.all %}
+      <tr>
+        <td>{{ attribute.attribute.name }}</td>
+        <td>{{ attribute.value }}</td>
+        <td>{{ attribute.value_max }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+<h2>Exits</h2>
+<table class="table table-striped" style="max-width: none;">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>description</th>
+      <th>level_min</th>
+      <th>level_max</th>
+      <th>kind</th>
+      <th>percent</th>
+      <th>attributes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for exit in exits %}
+      <tr>
+        <td>{{ exit.name }}</td>
+        <td>{{ exit.description }}</td>
+        <td>{{ exit.level_min }}</td>
+        <td>{{ exit.level_max }}</td>
+        <td>{{ exit.kind }}</td>
+        <td>{{ exit.percent }}</td>
+        <td>
+          {% for attribute in exit.attributes.all %}
+            {{ attribute }}
+          {% endfor %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+<hr>
+
+
+<a href="{% url 'core:index' %}" class="btn btn-primary">{% trans "Back"%}</a>
+<a href="{% url 'core:new' %}" class="btn btn-primary">{% trans "New Game"%}</a>
+{% endblock %}

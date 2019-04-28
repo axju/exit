@@ -1,0 +1,115 @@
+{
+  "questions": [
+    {
+      "decision" : {
+        "question": "Draußen scheint die Sonne, doch im TV läuft deine Lieblings Serie. Gehst du raus oder guckst du TV?",
+        "level": 6
+      },
+      "requires": [
+        {"attribute": "Fitness", "kind": "min", "value": 1}
+      ],
+      "answers": [
+        {
+          "text": "TV gucken",
+          "attributes": [
+            {"attribute": "Fitness", "value": -1}
+          ]
+        },
+        {
+          "text": "Die Sonne genießen",
+          "attributes": [
+            {"attribute": "Ausgeglichen", "value": 1}
+          ]
+        },
+        {
+          "text": "Mit Freunden Fußball spielen",
+          "attributes": [
+            {"attribute": "Gesellschaft", "value": 1},
+            {"attribute": "Fitness", "value": 1}
+          ]
+        }
+      ]
+    },
+
+    {
+      "decision" : {
+        "question": "Du hast etwas Taschengeld bekommen. Du kannst dir jetzt was zu Naschen kaufen oder du Sparst das Geld für Später.",
+        "level": 8
+      },
+      "answers": [
+        {
+          "text": "Naschen",
+          "attributes": [
+            {"attribute": "Fitness", "value": -1}
+          ]
+        },
+        {
+          "text": "Sparen",
+          "attributes": [
+            {"attribute": "Intelligenz", "value": 2}
+          ]
+        }
+      ]
+    },
+
+    {
+      "decision" : {
+        "question": "Du bist alleine zu Hause, was machst du?",
+        "level": 16
+      },
+      "answers": [
+        {
+          "text": "Freunde einladen",
+          "attributes": [
+            {"attribute": "Gesellschaft", "value": 1}
+          ]
+        },
+        {
+          "text": "Pizza und TV",
+          "attributes": [
+            {"attribute": "Ausgeglichen", "value": 2},
+            {"attribute": "Fitness", "value": -1}
+          ]
+        }
+      ]
+    },
+
+    {
+      "decision" : {
+        "question": "Ein Freund bietet dir eine Zigarette an. Nimmst du sie?",
+        "level": 16
+      },
+      "answers": [
+        {
+          "text": "Klar",
+          "attributes": [
+            {"attribute": "Gesellschaft", "value": 1},
+            {"attribute": "Fitness", "value": -1}
+          ]
+        },
+        {
+          "text": "Nein"
+        }
+      ]
+    },
+
+    {
+      "decision" : {
+        "question": "Ein älterer Freund läd dich zu einer Party ein. Deine Eltern haben dir verbotn hinzugehen. Gehst du trotzdem?",
+        "level": 16
+      },
+      "answers": [
+        {
+          "text": "Ja",
+          "attributes": [
+            {"attribute": "Gesellschaft", "value": 1}
+          ]
+        },
+        {
+          "text": "Nein"
+        }
+      ]
+    }
+
+  ]
+}
