@@ -101,6 +101,10 @@ class Game(models.Model):
     def __str__(self):
         return '{} - {}'.format(self.key, self.name)
 
+    def decisions_count(self):
+        return self.decisions.count()
+    decisions_count.short_description = 'Decisions'
+
 class GameDecision(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='decisions')
     decision = models.ForeignKey(Decision, on_delete=models.CASCADE, related_name='games')

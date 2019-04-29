@@ -13,6 +13,7 @@ class GameDecisionInline(admin.TabularInline):
     model = GameDecision
 
 class GameAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'status', 'level', 'decisions_count')
     inlines = [GameDecisionInline,]
 
 class AnswerGetAttributeInline(NestedTabularInline):
