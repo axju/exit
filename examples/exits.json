@@ -23,6 +23,17 @@
         "kind": "exit",
         "percent": 2
       }
+    },
+
+    {
+      "exit": {
+        "name": "Einfaches Leben",
+        "description": "Du hattes eine erfülltes Leben, aber es ist nichts spannendes pasiert.",
+        "level_min": 1,
+        "level_max": 100,
+        "kind": "victory",
+        "percent": 0
+      }
     }
 
   ]

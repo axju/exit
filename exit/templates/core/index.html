@@ -29,6 +29,7 @@
         </form>
         {% else %}
           {{ game.text }}
+          <hr>
           <a href="{% url 'core:new' %}" class="btn btn-primary">{% trans "New Game"%}</a>
           {% if game.status == 2 %}
             or <a href="{% url 'core:continue' %}" class="btn btn-primary">{% trans "Continue"%}</a>

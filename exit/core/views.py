@@ -13,9 +13,6 @@ class GameMixin(object):
     """docstring for GameMixin."""
 
     def dispatch(self, request, *args, **kwargs):
-        #if not request.session.session_key:
-        #    request.session.create()
-        #key = request.session.session_key
         if not request.session.get('game', ''):
             request.session['game'] = get_random_string(length=32)
 
@@ -47,11 +44,17 @@ class IndexView(GameMixin, FormView):
             decision = Decision.objects.exclude(games__game=self.game).first()
             if decision:
                 self.game.decisions.create(decision=decision)
+                self.game.level = decision.level
+                self.game.save()
+                return DecisionGameForm(self.game, **self.get_form_kwargs())
             else:
+                exits = self.get_exit_query()
+                exit = exits.filter(kind='victory').first()
                 self.game.status = 3
+                if exit:
+                    self.game.text = exit.description
                 self.game.save()
 
-            return DecisionGameForm(self.game, **self.get_form_kwargs())
         return None
 
     def form_valid(self, form):
@@ -62,19 +65,21 @@ class IndexView(GameMixin, FormView):
             self.game.text = exit.description
             self.game.status = 2
             if exit.kind == 'exit':
-                self.game.status = 3
+                self.game.status = 4
 
             self.game.save()
 
         return super(IndexView, self).form_valid(form)
 
-    def get_exit(self):
-        exits = Exit.objects.filter(level_min__lte=self.game.level)
+    def get_exit_query(self):
+        exits = Exit.objects.filter(level_min__lte=self.game.level, level_max__gte=self.game.level)
         for attribute in self.game.attributes.all():
             exits = exits.exclude(attributes__kind='min', attributes__attribute=attribute.attribute, attributes__value__gte=attribute.value)
             exits = exits.exclude(attributes__kind='max', attributes__attribute=attribute.attribute, attributes__value__lte=attribute.value)
+        return exits
 
-        for exit in exits:
+    def get_exit(self):
+        for exit in self.get_exit_query():
             n = randint(1,100)
             if n <= exit.percent:
                 return exit

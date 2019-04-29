@@ -84,10 +84,17 @@ class ExitAttribute(models.Model):
 
 
 class Game(models.Model):
+    GAME_STATUS = (
+        (0, 'begin'),
+        (1, 'choices'),
+        (2, 'text'),
+        (3, 'victory'),
+        (4, 'exit'),
+    )
     key = models.CharField(_('key'), max_length=64)
     name = models.CharField(_('name'), max_length=256, null=True, blank=True)
 
-    status = models.IntegerField(default=0)
+    status = models.IntegerField(default=0, choices=GAME_STATUS)
     level = models.IntegerField(default=1)
     text = models.TextField(_('description'), default='')
 
