@@ -27,8 +27,7 @@ Setup Django::
 
 Import some game data::
 
-  python exit\manage.py import examples\questions-1.json
-  python exit\manage.py import examples\exits.json
+  python .\exit\manage.py import .\examples\ --delete
 
 Run development server::
 
