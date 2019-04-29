@@ -58,6 +58,7 @@ class Exit(models.Model):
     EXIT_KINDS = (
         ('victory', 'victory'),
         ('failure', 'failure'),
+        ('exit', 'exit'),
     )
     name = models.CharField(_('name'), max_length=128)
     description = models.TextField(_('description'), default='')
@@ -88,6 +89,7 @@ class Game(models.Model):
 
     status = models.IntegerField(default=0)
     level = models.IntegerField(default=1)
+    text = models.TextField(_('description'), default='')
 
     def __str__(self):
         return '{} - {}'.format(self.key, self.name)

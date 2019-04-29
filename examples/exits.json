@@ -1,0 +1,29 @@
+{
+  "exits": [
+    {
+      "exit": {
+        "name": "Stress",
+        "description": "Du hast zu viel Stress und erleidest einen totlichen Herzenfakt",
+        "level_min": 35,
+        "level_max": 100,
+        "kind": "exit",
+        "percent": 2
+      },
+      "attributes": [
+        {"attribute": "Stress", "kind": "min", "value": 20}
+      ]
+    },
+
+    {
+      "exit": {
+        "name": "Tot",
+        "description": "Unerwarteter Tot",
+        "level_min": 1,
+        "level_max": 100,
+        "kind": "exit",
+        "percent": 2
+      }
+    }
+
+  ]
+}

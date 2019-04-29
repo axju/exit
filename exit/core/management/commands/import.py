@@ -1,6 +1,6 @@
 import json
 from django.core.management.base import BaseCommand, CommandError
-from core.models import Decision, Attribute
+from core.models import Attribute, Decision, Exit
 
 class Command(BaseCommand):
     help = 'Import game data'
@@ -14,19 +14,13 @@ class Command(BaseCommand):
             help='Delete curent game data',
         )
 
-    def handle(self, *args, **options):
-        if options['delete']:
-            Decision.objects.all().delete()
-            Attribute.objects.all().delete()
-
-        with open(options['filename'], encoding='utf8') as json_file:
-            data = json.load(json_file)
-
-        for attribute in data.get('attributes', []):
+    def import_attributes(self, attributes):
+        for attribute in attributes:
             attri, created = Attribute.objects.get_or_create(**attribute)
             self.stdout.write(self.style.SUCCESS('Add attribute {}'.format(attri.pk)))
 
-        for question in data.get('questions', []):
+    def import_questions(self, questions):
+        for question in questions:
             decision, created = Decision.objects.get_or_create(**question['decision'])
             if not created:
                 continue
@@ -42,3 +36,25 @@ class Command(BaseCommand):
                 for data in answer.get('attributes', []):
                     attri, _ = Attribute.objects.get_or_create(name=data.get('attribute', 'ERROR'))
                     a.attributes.create(attribute=attri, value=data.get('value', 1))
+
+    def import_exits(self, exits):
+        for data in exits:
+            exit, created = Exit.objects.get_or_create(**data['exit'])
+
+            for attribute in data.get('attributes', []):
+                attri, _ = Attribute.objects.get_or_create(name=attribute.get('attribute', 'ERROR'))
+                exit.attributes.create(attribute=attri, kind=attribute.get('kind', 'min'), value=attribute.get('value', 1))
+
+
+    def handle(self, *args, **options):
+        if options['delete']:
+            Decision.objects.all().delete()
+            Attribute.objects.all().delete()
+            Exit.objects.all().delete()
+
+        with open(options['filename'], encoding='utf8') as json_file:
+            data = json.load(json_file)
+
+        self.import_attributes(data.get('attributes', []))
+        self.import_questions(data.get('questions', []))
+        self.import_exits(data.get('exits', []))

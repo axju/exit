@@ -1,6 +1,6 @@
 from django import forms
-
-from core.models import Decision, Answer
+from random import randint
+from core.models import Decision, Answer, Exit
 
 class BasicGameForm(forms.Form):
 
@@ -25,23 +25,14 @@ class DecisionGameForm(BasicGameForm):
         super(DecisionGameForm, self).__init__(game, *args, **kwargs)
 
         decision = self.game.decisions.filter(answer__isnull=True).first()
-        if decision:
-            decision = decision.decision
-        else:
-            decision = self.new_decision()
+        if not decision:
+            print('error')
+            return
 
-        if decision:
-            OPTIONS = [ (a.pk, a.name) for a in decision.answers.order_by('?')]
-            self.fields['decision'] = forms.ChoiceField(label=decision.question, widget=forms.RadioSelect(), choices=OPTIONS)
+        decision = decision.decision
+        OPTIONS = [ (a.pk, a.name) for a in decision.answers.order_by('?')]
+        self.fields['decision'] = forms.ChoiceField(label=decision.question, widget=forms.RadioSelect(), choices=OPTIONS)
 
-    def new_decision(self):
-        decision = Decision.objects.exclude(games__game=self.game).first()
-        if decision:
-            self.game.decisions.create(decision=decision)
-        else:
-            self.game.status = 10
-            self.game.save()
-        return decision
 
     def save(self):
         decision = self.game.decisions.get(answer__isnull=True)
@@ -54,15 +45,9 @@ class DecisionGameForm(BasicGameForm):
         decision.answer = answer
         decision.save()
 
-        for attr in answer.get.all():
-            print(attr.attribute.name, attr.value)
-            print(attr)
+        for attr in answer.attributes.all():
             attribute = self.game.attributes.get(attribute=attr.attribute)
             value = min(attribute.value + attr.value, attribute.value_max)
             attribute.value = max(value, 0)
             attribute.save()
-
-        decision = self.new_decision()
-        if self.game.status == 1:
-            self.game.level = decision.level
         self.game.save()
