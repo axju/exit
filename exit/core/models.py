@@ -90,6 +90,7 @@ class Game(models.Model):
         (2, 'text'),
         (3, 'victory'),
         (4, 'exit'),
+        (5, 'error'),
     )
     key = models.CharField(_('key'), max_length=64)
     name = models.CharField(_('name'), max_length=256, null=True, blank=True)
@@ -105,23 +106,38 @@ class Game(models.Model):
         return self.decisions.count()
     decisions_count.short_description = 'Decisions'
 
+    def get_event_query(self):
+        events = Event.objects.filter(level_min__lte=self.level, level_max__gte=self.level)
+        for attribute in self.attributes.all():
+            events = events.exclude(attributes__kind='min', attributes__attribute=attribute.attribute, attributes__value__gte=attribute.value)
+            events = events.exclude(attributes__kind='max', attributes__attribute=attribute.attribute, attributes__value__lte=attribute.value)
+        return events
+
     def get_decision(self):
         """get the curent decision"""
+        decision = self.decisions.filter(answer__isnull=True).first()
+        if decision:
+            return decision.decision
+
         decision = Decision.objects.exclude(games__game=self).first()
-        print(decision)
         if decision:
             self.decisions.create(decision=decision)
             self.level = decision.level
             self.save()
             return decision
 
-        """events = self.get_event_query()
+        events = self.get_event_query()
         event = events.filter(kind='victory').first()
-        self.game.status = 3
         if event:
-            self.text = event.description
-        self.save()"""
+            self.events.create(event=event)
+            self.status = 3
+        else:
+            self.status = 5
+        self.save()
         return None
+
+    def get_event(self):
+        return self.events.filter(seen=False).first()
 
 class GameDecision(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='decisions')
@@ -134,6 +150,7 @@ class GameDecision(models.Model):
 class GameEvent(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='events')
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='games')
+    seen = models.BooleanField(default=False)
 
     def __str__(self):
         return '{} - {}'.format(self.event.name, self.event.kind)

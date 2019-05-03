@@ -39,12 +39,12 @@ class IndexView(GameMixin, FormView):
         elif self.game.decisions:
             return DecisionGameForm(self.game, **self.get_form_kwargs())
 
-        events = self.get_event_query()
-        event = events.filter(kind='victory').first()
-        self.game.status = 3
-        if event:
-            self.game.text = event.description
-        self.game.save()               
+        #events = self.get_event_query()
+        #event = events.filter(kind='victory').first()
+        #self.game.status = 3
+        #if event:
+        #    self.game.text = event.description
+        #self.game.save()               
 
         return None
 
