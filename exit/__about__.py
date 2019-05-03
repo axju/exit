@@ -1,6 +1,6 @@
-__title__ = 'exit-web'
+__title__ = 'event-web'
 __summary__ = '...'
-__url__ = 'https://github.com/axju/exit-web'
+__url__ = 'https://github.com/axju/event-web'
 
 __version__ = '1.0.0'
 

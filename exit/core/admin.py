@@ -4,7 +4,7 @@ from nested_inline.admin import NestedStackedInline, NestedTabularInline, Nested
 from core.models import Attribute
 from core.models import Game, GameDecision
 from core.models import Decision, DecisionRequireAttribute, Answer, AnswerGetAttribute
-from core.models import Exit, ExitAttribute
+from core.models import Event, EventAttribute
 
 class AttributeAdmin(admin.ModelAdmin):
     pass
@@ -37,15 +37,15 @@ class DecisionAdmin(NestedModelAdmin):
     inlines = [DecisionRequireAttributeInline, AnswerInline]
     list_display = ('__str__', 'level')
 
-class ExitAttributeInline(admin.TabularInline):
-    model = ExitAttribute
+class EventAttributeInline(admin.TabularInline):
+    model = EventAttribute
 
-class ExitAdmin(admin.ModelAdmin):
-    inlines = [ExitAttributeInline,]
+class EventAdmin(admin.ModelAdmin):
+    inlines = [EventAttributeInline,]
 
 
 
 admin.site.register(Attribute, AttributeAdmin)
 admin.site.register(Game, GameAdmin)
 admin.site.register(Decision, DecisionAdmin)
-admin.site.register(Exit, ExitAdmin)
+admin.site.register(Event, EventAdmin)

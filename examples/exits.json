@@ -1,12 +1,12 @@
 {
-  "exits": [
+  "events": [
     {
-      "exit": {
+      "event": {
         "name": "Stress",
         "description": "Du hast zu viel Stress und erleidest einen totlichen Herzenfakt",
         "level_min": 35,
         "level_max": 100,
-        "kind": "exit",
+        "kind": "event",
         "percent": 2
       },
       "attributes": [
@@ -15,18 +15,18 @@
     },
 
     {
-      "exit": {
+      "event": {
         "name": "Tot",
         "description": "Unerwarteter Tot",
         "level_min": 1,
         "level_max": 100,
-        "kind": "exit",
+        "kind": "event",
         "percent": 2
       }
     },
 
     {
-      "exit": {
+      "event": {
         "name": "Einfaches Leben",
         "description": "Du hattes eine erfülltes Leben, aber es ist nichts spannendes pasiert.",
         "level_min": 1,

@@ -8,7 +8,7 @@ def readme():
         return f.read()
 
 about = {}
-with open(os.path.join(base_dir, 'exit', '__about__.py')) as f:
+with open(os.path.join(base_dir, 'event', '__about__.py')) as f:
     exec(f.read(), about)
 
 setup(

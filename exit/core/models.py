@@ -54,11 +54,11 @@ class AnswerGetAttribute(models.Model):
 
 
 
-class Exit(models.Model):
+class Event(models.Model):
     EXIT_KINDS = (
         ('victory', 'victory'),
         ('failure', 'failure'),
-        ('exit', 'exit'),
+        ('event', 'event'),
     )
     name = models.CharField(_('name'), max_length=128)
     description = models.TextField(_('description'), default='')
@@ -73,9 +73,9 @@ class Exit(models.Model):
     def __str__(self):
         return self.name
 
-class ExitAttribute(models.Model):
-    exit = models.ForeignKey(Exit, on_delete=models.CASCADE, related_name='attributes')
-    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name='exits')
+class EventAttribute(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='attributes')
+    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name='events')
     kind = models.CharField(_('value kind'), max_length=3, choices=VALUE_KINDS)
     value = models.IntegerField(default=1)
 
@@ -105,6 +105,24 @@ class Game(models.Model):
         return self.decisions.count()
     decisions_count.short_description = 'Decisions'
 
+    def get_decision(self):
+        """get the curent decision"""
+        decision = Decision.objects.exclude(games__game=self).first()
+        print(decision)
+        if decision:
+            self.decisions.create(decision=decision)
+            self.level = decision.level
+            self.save()
+            return decision
+
+        """events = self.get_event_query()
+        event = events.filter(kind='victory').first()
+        self.game.status = 3
+        if event:
+            self.text = event.description
+        self.save()"""
+        return None
+
 class GameDecision(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='decisions')
     decision = models.ForeignKey(Decision, on_delete=models.CASCADE, related_name='games')
@@ -112,6 +130,13 @@ class GameDecision(models.Model):
 
     def __str__(self):
         return '{} - {}'.format(self.decision, self.answer)
+
+class GameEvent(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='events')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='games')
+
+    def __str__(self):
+        return '{} - {}'.format(self.event.name, self.event.kind)
 
 class GameAttribute(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='attributes')

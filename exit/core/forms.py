@@ -1,6 +1,6 @@
 from django import forms
 from random import randint
-from core.models import Decision, Answer, Exit
+from core.models import Decision, Answer, Event
 
 class BasicGameForm(forms.Form):
 
@@ -24,23 +24,21 @@ class DecisionGameForm(BasicGameForm):
     def __init__(self, game, *args, **kwargs):
         super(DecisionGameForm, self).__init__(game, *args, **kwargs)
 
-        decision = self.game.decisions.filter(answer__isnull=True).first()
+        decision = self.game.get_decision()
         if not decision:
             print('error')
             return
 
-        decision = decision.decision
         OPTIONS = [ (a.pk, a.name) for a in decision.answers.order_by('?')]
         self.fields['decision'] = forms.ChoiceField(label=decision.question, widget=forms.RadioSelect(), choices=OPTIONS)
 
 
     def save(self):
-        decision = self.game.decisions.get(answer__isnull=True)
+        decision = self.game.get_decision()
         if not decision:
             print('error')
             return
 
-        print(self.cleaned_data['decision'])
         answer = Answer.objects.get(pk=self.cleaned_data['decision'])
         decision.answer = answer
         decision.save()

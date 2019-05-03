@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 
 from random import randint
 from django.utils.crypto import get_random_string
-from core.models import Game, Attribute, Exit, Answer, Decision
+from core.models import Game, Attribute, Event, Answer, Decision
 from core.forms import NewGameForm, DecisionGameForm
 
 
@@ -33,56 +33,47 @@ class IndexView(GameMixin, FormView):
     success_url = reverse_lazy('core:index')
 
     def get_form(self, form_class=None):
-        if self.game.status == 0:
+        if not self.game.name:
             return NewGameForm(self.game, **self.get_form_kwargs())
 
-        elif self.game.status == 1:
+        elif self.game.decisions:
+            return DecisionGameForm(self.game, **self.get_form_kwargs())
 
-            if self.game.decisions.filter(answer__isnull=True).count() > 0:
-                return DecisionGameForm(self.game, **self.get_form_kwargs())
-
-            decision = Decision.objects.exclude(games__game=self.game).first()
-            if decision:
-                self.game.decisions.create(decision=decision)
-                self.game.level = decision.level
-                self.game.save()
-                return DecisionGameForm(self.game, **self.get_form_kwargs())
-            else:
-                exits = self.get_exit_query()
-                exit = exits.filter(kind='victory').first()
-                self.game.status = 3
-                if exit:
-                    self.game.text = exit.description
-                self.game.save()
+        events = self.get_event_query()
+        event = events.filter(kind='victory').first()
+        self.game.status = 3
+        if event:
+            self.game.text = event.description
+        self.game.save()               
 
         return None
 
     def form_valid(self, form):
         form.save()
 
-        exit = self.get_exit()
-        if exit:
-            self.game.text = exit.description
+        event = self.get_event()
+        if event:
+            self.game.text = event.description
             self.game.status = 2
-            if exit.kind == 'exit':
+            if event.kind == 'event':
                 self.game.status = 4
 
             self.game.save()
 
         return super(IndexView, self).form_valid(form)
 
-    def get_exit_query(self):
-        exits = Exit.objects.filter(level_min__lte=self.game.level, level_max__gte=self.game.level)
+    def get_event_query(self):
+        events = Event.objects.filter(level_min__lte=self.game.level, level_max__gte=self.game.level)
         for attribute in self.game.attributes.all():
-            exits = exits.exclude(attributes__kind='min', attributes__attribute=attribute.attribute, attributes__value__gte=attribute.value)
-            exits = exits.exclude(attributes__kind='max', attributes__attribute=attribute.attribute, attributes__value__lte=attribute.value)
-        return exits
+            events = events.exclude(attributes__kind='min', attributes__attribute=attribute.attribute, attributes__value__gte=attribute.value)
+            events = events.exclude(attributes__kind='max', attributes__attribute=attribute.attribute, attributes__value__lte=attribute.value)
+        return events
 
-    def get_exit(self):
-        for exit in self.get_exit_query():
+    def get_event(self):
+        for event in self.get_event_query():
             n = randint(1,100)
-            if n <= exit.percent:
-                return exit
+            if n <= event.percent:
+                return event
 
         return None
 
@@ -108,10 +99,10 @@ class DebugView(GameMixin, TemplateView):
     template_name = "core/debug.html"
 
     def get_context_data(self, **kwargs):
-        exits = Exit.objects.filter(level_min__lte=self.game.level)
+        events = Event.objects.filter(level_min__lte=self.game.level)
         for attribute in self.game.attributes.all():
-            exits = exits.exclude(attributes__kind='min', attributes__attribute=attribute.attribute, attributes__value__gte=attribute.value)
-            exits = exits.exclude(attributes__kind='max', attributes__attribute=attribute.attribute, attributes__value__lte=attribute.value)
+            events = events.exclude(attributes__kind='min', attributes__attribute=attribute.attribute, attributes__value__gte=attribute.value)
+            events = events.exclude(attributes__kind='max', attributes__attribute=attribute.attribute, attributes__value__lte=attribute.value)
 
-        kwargs['exits'] = exits
+        kwargs['events'] = events
         return super(DebugView, self).get_context_data(**kwargs)

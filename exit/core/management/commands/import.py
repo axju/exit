@@ -1,7 +1,7 @@
 import os
 import json
 from django.core.management.base import BaseCommand, CommandError
-from core.models import Attribute, Decision, Exit
+from core.models import Attribute, Decision, Event
 
 class Command(BaseCommand):
     help = 'Import game data'
@@ -38,14 +38,14 @@ class Command(BaseCommand):
                     attri, _ = Attribute.objects.get_or_create(name=data.get('attribute', 'ERROR'))
                     a.attributes.create(attribute=attri, value=data.get('value', 1))
 
-    def import_exits(self, exits):
-        for data in exits:
-            exit, created = Exit.objects.get_or_create(**data['exit'])
-            self.stdout.write(self.style.SUCCESS('Add exit {}'.format(exit.pk)))
+    def import_events(self, events):
+        for data in events:
+            event, created = Event.objects.get_or_create(**data['event'])
+            self.stdout.write(self.style.SUCCESS('Add event {}'.format(event.pk)))
 
             for attribute in data.get('attributes', []):
                 attri, _ = Attribute.objects.get_or_create(name=attribute.get('attribute', 'ERROR'))
-                exit.attributes.create(attribute=attri, kind=attribute.get('kind', 'min'), value=attribute.get('value', 1))
+                event.attributes.create(attribute=attri, kind=attribute.get('kind', 'min'), value=attribute.get('value', 1))
 
     def import_file(self, filename):
         try:
@@ -54,7 +54,7 @@ class Command(BaseCommand):
 
             self.import_attributes(data.get('attributes', []))
             self.import_questions(data.get('questions', []))
-            self.import_exits(data.get('exits', []))
+            self.import_events(data.get('events', []))
         except Exception as e:
             self.stdout.write(self.style.ERROR('Cannot load file "{}"\n{}'.format(filename, e)))
 
@@ -63,7 +63,7 @@ class Command(BaseCommand):
         if options['delete']:
             Decision.objects.all().delete()
             Attribute.objects.all().delete()
-            Exit.objects.all().delete()
+            Event.objects.all().delete()
 
         if os.path.isdir(options['filename']):
             for filename in os.listdir(options['filename']):
