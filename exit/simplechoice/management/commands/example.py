@@ -1,5 +1,5 @@
-from django.core.management.base import BaseCommand, CommandError
-from core.models import Decision, Attribute
+from django.simplechoice.management.base import BaseCommand, CommandError
+from simplechoice.models import Decision, Attribute
 
 class Command(BaseCommand):
     help = 'Create some example data'

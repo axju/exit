@@ -5,8 +5,8 @@ from django.urls import reverse_lazy
 
 from random import randint
 from django.utils.crypto import get_random_string
-from core.models import Game, Attribute, Event, Answer, Decision
-from core.forms import NewGameForm, DecisionGameForm
+from simplechoice.models import Game, Attribute, Event, Answer, Decision
+from simplechoice.forms import NewGameForm, DecisionGameForm
 
 
 class GameMixin(object):
@@ -29,14 +29,14 @@ class GameMixin(object):
 
 
 class IndexView(GameMixin, FormView):
-    template_name = 'core/index.html'
-    success_url = reverse_lazy('core:index')
+    template_name = 'simplechoice/index.html'
+    success_url = reverse_lazy('simplechoice:index')
 
     def get_form(self, form_class=None):
         if not self.game.name:
             return NewGameForm(self.game, **self.get_form_kwargs())
 
-        elif self.game.decisions:
+        elif self.game.status == 1 and self.game.get_decision():
             return DecisionGameForm(self.game, **self.get_form_kwargs())
 
         #events = self.get_event_query()
@@ -44,7 +44,7 @@ class IndexView(GameMixin, FormView):
         #self.game.status = 3
         #if event:
         #    self.game.text = event.description
-        #self.game.save()               
+        #self.game.save()
 
         return None
 
@@ -52,26 +52,22 @@ class IndexView(GameMixin, FormView):
         form.save()
 
         event = self.get_event()
+        print('Find event: {}'.format(event))
         if event:
-            self.game.text = event.description
-            self.game.status = 2
-            if event.kind == 'event':
-                self.game.status = 4
+            self.game.events.create(event=event)
+            self.game.status = 4 if event.kind == 'exit' else 2
+            #if event.kind == 'exit':
+            #    self.game.status = 4
 
             self.game.save()
 
         return super(IndexView, self).form_valid(form)
 
-    def get_event_query(self):
-        events = Event.objects.filter(level_min__lte=self.game.level, level_max__gte=self.game.level)
-        for attribute in self.game.attributes.all():
-            events = events.exclude(attributes__kind='min', attributes__attribute=attribute.attribute, attributes__value__gte=attribute.value)
-            events = events.exclude(attributes__kind='max', attributes__attribute=attribute.attribute, attributes__value__lte=attribute.value)
-        return events
-
     def get_event(self):
-        for event in self.get_event_query():
+        print('check events')
+        for event in self.game.get_event_query():
             n = randint(1,100)
+            print(' ', event, n, event.percent)
             if n <= event.percent:
                 return event
 
@@ -82,27 +78,24 @@ class NewView(View):
 
     def get(self, request, *args, **kwargs):
         del request.session['game']
-        return redirect('core:index')
+        return redirect('simplechoice:index')
 
 
 class ContinueView(GameMixin, View):
 
     def get(self, request, *args, **kwargs):
-        self.game.status = 1
-        self.game.save()
-        return redirect('core:index')
+        if self.game.status == 2:
+            self.game.events.update(seen=True)
+            self.game.status = 1
+            self.game.save()
+        return redirect('simplechoice:index')
 
 
 
 
 class DebugView(GameMixin, TemplateView):
-    template_name = "core/debug.html"
+    template_name = "simplechoice/debug.html"
 
     def get_context_data(self, **kwargs):
-        events = Event.objects.filter(level_min__lte=self.game.level)
-        for attribute in self.game.attributes.all():
-            events = events.exclude(attributes__kind='min', attributes__attribute=attribute.attribute, attributes__value__gte=attribute.value)
-            events = events.exclude(attributes__kind='max', attributes__attribute=attribute.attribute, attributes__value__lte=attribute.value)
-
-        kwargs['events'] = events
+        kwargs['events'] = self.game.get_event_query()
         return super(DebugView, self).get_context_data(**kwargs)

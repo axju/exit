@@ -1,10 +1,10 @@
 from django.contrib import admin
 from nested_inline.admin import NestedStackedInline, NestedTabularInline, NestedModelAdmin
 
-from core.models import Attribute
-from core.models import Game, GameDecision
-from core.models import Decision, DecisionRequireAttribute, Answer, AnswerGetAttribute
-from core.models import Event, EventAttribute
+from simplechoice.models import Attribute
+from simplechoice.models import Game, GameDecision, GameAttribute, GameEvent
+from simplechoice.models import Decision, DecisionRequireAttribute, Answer, AnswerGetAttribute
+from simplechoice.models import Event, EventAttribute
 
 class AttributeAdmin(admin.ModelAdmin):
     pass
@@ -12,9 +12,15 @@ class AttributeAdmin(admin.ModelAdmin):
 class GameDecisionInline(admin.TabularInline):
     model = GameDecision
 
+class GameAttributeInline(admin.TabularInline):
+    model = GameAttribute
+
+class GameEventInline(admin.TabularInline):
+    model = GameEvent
+
 class GameAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'status', 'level', 'decisions_count')
-    inlines = [GameDecisionInline,]
+    inlines = [GameDecisionInline, GameAttributeInline, GameEventInline]
 
 class AnswerGetAttributeInline(NestedTabularInline):
     model = AnswerGetAttribute
@@ -42,6 +48,7 @@ class EventAttributeInline(admin.TabularInline):
 
 class EventAdmin(admin.ModelAdmin):
     inlines = [EventAttributeInline,]
+    list_display = ('name', 'level_min', 'level_max', 'kind', 'percent', 'attributes_count')
 
 
 

@@ -35,7 +35,7 @@ LANGUAGES = (
 
 
 LOGIN_URL = 'alpha:login'
-LOGIN_REDIRECT_URL = 'core:project-list'
+LOGIN_REDIRECT_URL = 'simplechoice:project-list'
 
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -44,6 +44,10 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 ALLOWED_HOSTS = []
 
+
+SIMPLECHOICE = {
+
+}
 
 # Application definition
 
@@ -58,7 +62,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'nested_inline',
 
-    'core',
+    'simplechoice',
 ]
 
 MIDDLEWARE = [

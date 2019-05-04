@@ -7,6 +7,6 @@
 {% block content %}
 <h1>404</h1>
 <p>{% trans "You should not go here."%}
-  <a href="{% if user.is_authenticated %} {% url 'core:project-list' %} {% else %} # {% endif %}">{% trans "Back"%}</a>
+  <a href="{% if user.is_authenticated %} {% url 'simplechoice:project-list' %} {% else %} # {% endif %}">{% trans "Back"%}</a>
 </p>
 {% endblock %}

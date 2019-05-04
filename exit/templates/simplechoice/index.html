@@ -12,7 +12,16 @@
   <div class="col-sm-6">
     <div class="card">
       <div class="card-header">
-        <h2 class="float-left">{% if game.status == 0 %} Willkommen bei EXIT {% else %} {{ game.name }} {% endif %}</h2>
+        <h2 class="float-left">
+          {% if game.status == 0 %}
+            Willkommen bei EXIT
+          {% elif game.status == 3 %}
+            {{ game.name }}, dein Leben war genial
+          {% elif game.status == 4 %}
+            {{ game.name }}, du bist gestorben
+          {% else %}
+            {{ game.name }}
+          {% endif %}</h2>
         <div class="float-right">
           <small>Alter:</small> <span class="badge badge-primary" style="vertical-align: center">{{ game.level }}</span>
         </div>
@@ -28,11 +37,12 @@
           <button type="submit" class="btn btn-primary">{% trans "Next"%}</button>
         </form>
         {% else %}
-          {{ game.text }}
+          {{ game.event.description }}
           <hr>
-          <a href="{% url 'core:new' %}" class="btn btn-primary">{% trans "New Game"%}</a>
           {% if game.status == 2 %}
-            or <a href="{% url 'core:continue' %}" class="btn btn-primary">{% trans "Continue"%}</a>
+            <a href="{% url 'simplechoice:continue' %}" class="btn btn-primary">{% trans "Continue"%}</a>
+          {% else %}
+            <a href="{% url 'simplechoice:new' %}" class="btn btn-primary">{% trans "New Game"%}</a>
           {% endif %}
         {% endif %}
       </div>

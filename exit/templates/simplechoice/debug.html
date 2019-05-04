@@ -57,16 +57,16 @@
     </tr>
   </thead>
   <tbody>
-    {% for exit in exits %}
+    {% for event in events %}
       <tr>
-        <td>{{ exit.name }}</td>
-        <td>{{ exit.description }}</td>
-        <td>{{ exit.level_min }}</td>
-        <td>{{ exit.level_max }}</td>
-        <td>{{ exit.kind }}</td>
-        <td>{{ exit.percent }}</td>
+        <td>{{ event.name }}</td>
+        <td>{{ event.description }}</td>
+        <td>{{ event.level_min }}</td>
+        <td>{{ event.level_max }}</td>
+        <td>{{ event.kind }}</td>
+        <td>{{ event.percent }}</td>
         <td>
-          {% for attribute in exit.attributes.all %}
+          {% for attribute in event.attributes.all %}
             {{ attribute }}
           {% endfor %}
         </td>
@@ -79,6 +79,6 @@
 <hr>
 
 
-<a href="{% url 'core:index' %}" class="btn btn-primary">{% trans "Back"%}</a>
-<a href="{% url 'core:new' %}" class="btn btn-primary">{% trans "New Game"%}</a>
+<a href="{% url 'simplechoice:index' %}" class="btn btn-primary">{% trans "Back"%}</a>
+<a href="{% url 'simplechoice:new' %}" class="btn btn-primary">{% trans "New Game"%}</a>
 {% endblock %}

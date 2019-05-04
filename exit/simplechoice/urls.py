@@ -1,8 +1,8 @@
 from django.urls import path
 
-from core.views import IndexView, NewView, ContinueView, DebugView#, PlayView#, SignupView, ActivateView, PageView
+from simplechoice.views import IndexView, NewView, ContinueView, DebugView#, PlayView#, SignupView, ActivateView, PageView
 
-app_name = 'core'
+app_name = 'simplechoice'
 
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),

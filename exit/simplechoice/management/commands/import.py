@@ -1,7 +1,7 @@
 import os
 import json
 from django.core.management.base import BaseCommand, CommandError
-from core.models import Attribute, Decision, Event
+from simplechoice.models import Attribute, Decision, Event
 
 class Command(BaseCommand):
     help = 'Import game data'

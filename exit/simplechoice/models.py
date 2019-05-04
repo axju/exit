@@ -58,7 +58,7 @@ class Event(models.Model):
     EXIT_KINDS = (
         ('victory', 'victory'),
         ('failure', 'failure'),
-        ('event', 'event'),
+        ('exit', 'exit'),
     )
     name = models.CharField(_('name'), max_length=128)
     description = models.TextField(_('description'), default='')
@@ -72,6 +72,10 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
+
+    def attributes_count(self):
+        return self.attributes.count()
+    attributes_count.short_description = 'attributes'
 
 class EventAttribute(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='attributes')
@@ -88,8 +92,10 @@ class Game(models.Model):
         (0, 'begin'),
         (1, 'choices'),
         (2, 'text'),
+
         (3, 'victory'),
         (4, 'exit'),
+
         (5, 'error'),
     )
     key = models.CharField(_('key'), max_length=64)
@@ -97,7 +103,6 @@ class Game(models.Model):
 
     status = models.IntegerField(default=0, choices=GAME_STATUS)
     level = models.IntegerField(default=1)
-    text = models.TextField(_('description'), default='')
 
     def __str__(self):
         return '{} - {}'.format(self.key, self.name)
@@ -107,25 +112,30 @@ class Game(models.Model):
     decisions_count.short_description = 'Decisions'
 
     def get_event_query(self):
-        events = Event.objects.filter(level_min__lte=self.level, level_max__gte=self.level)
+        events = Event.objects.filter(level_min__lte=self.level, level_max__gte=self.level).exclude(games__game=self)
+
         for attribute in self.attributes.all():
-            events = events.exclude(attributes__kind='min', attributes__attribute=attribute.attribute, attributes__value__gte=attribute.value)
-            events = events.exclude(attributes__kind='max', attributes__attribute=attribute.attribute, attributes__value__lte=attribute.value)
+            events = events.exclude(attributes__kind='min', attributes__attribute=attribute.attribute, attributes__value__gt=attribute.value)
+            events = events.exclude(attributes__kind='max', attributes__attribute=attribute.attribute, attributes__value__lt=attribute.value)
+
         return events
 
     def get_decision(self):
         """get the curent decision"""
-        decision = self.decisions.filter(answer__isnull=True).first()
-        if decision:
-            return decision.decision
+        game_decision = self.decisions.filter(answer__isnull=True).first()
+        if game_decision:
+            print('Have open decisions')
+            return game_decision
 
         decision = Decision.objects.exclude(games__game=self).first()
         if decision:
-            self.decisions.create(decision=decision)
+            print('Created new decisions')
+            game_decision = self.decisions.create(decision=decision)
             self.level = decision.level
             self.save()
-            return decision
+            return game_decision
 
+        print('No more decisions. Find exit event')
         events = self.get_event_query()
         event = events.filter(kind='victory').first()
         if event:
@@ -136,8 +146,11 @@ class Game(models.Model):
         self.save()
         return None
 
-    def get_event(self):
-        return self.events.filter(seen=False).first()
+    def event(self):
+        event = self.events.filter(seen=False).first()
+        if event:
+            return event.event
+        return None
 
 class GameDecision(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='decisions')
