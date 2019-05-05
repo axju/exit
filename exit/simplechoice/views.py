@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import FormView, RedirectView, TemplateView
 from django.urls import reverse_lazy
+from django.conf import settings
 
 from random import randint
 from django.utils.crypto import get_random_string
@@ -39,13 +40,6 @@ class IndexView(GameMixin, FormView):
         elif self.game.status == 1 and self.game.get_decision():
             return DecisionGameForm(self.game, **self.get_form_kwargs())
 
-        #events = self.get_event_query()
-        #event = events.filter(kind='victory').first()
-        #self.game.status = 3
-        #if event:
-        #    self.game.text = event.description
-        #self.game.save()
-
         return None
 
     def form_valid(self, form):
@@ -56,9 +50,6 @@ class IndexView(GameMixin, FormView):
         if event:
             self.game.events.create(event=event)
             self.game.status = 4 if event.kind == 'exit' else 2
-            #if event.kind == 'exit':
-            #    self.game.status = 4
-
             self.game.save()
 
         return super(IndexView, self).form_valid(form)
@@ -72,6 +63,26 @@ class IndexView(GameMixin, FormView):
                 return event
 
         return None
+
+    def get_context_data(self, **kwargs):
+        exits = settings.SIMPLECHOICE.get('EXITS', [])
+        event = self.game.events.count()
+        level = self.game.level
+        for exit in exits:
+            if (exit.get('levelt_min', 0) <= level <= exit.get('level_max', 100)) and (exit.get('event_min', 0) <= event <= exit.get('event_max', 100)):
+                kwargs['exit'] = {
+                    'name': exit.get('name', 0),
+                    'text': exit.get('text', 0),
+                }
+                return super(IndexView, self).get_context_data(**kwargs)
+
+        if exits:
+            kwargs['exit'] = {
+                'name': exits[0].get('name', 'ERROR'),
+                'text': exits[0].get('text', 'No exit in setting :('),
+            }
+
+        return super(IndexView, self).get_context_data(**kwargs)
 
 
 class NewView(View):

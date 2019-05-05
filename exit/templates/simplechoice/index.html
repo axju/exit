@@ -36,7 +36,8 @@
           {{ form|crispy }}
           <button type="submit" class="btn btn-primary">{% trans "Next"%}</button>
         </form>
-        {% else %}
+
+        {% elif game.event %}
           {{ game.event.description }}
           <hr>
           {% if game.status == 2 %}
@@ -44,6 +45,9 @@
           {% else %}
             <a href="{% url 'simplechoice:new' %}" class="btn btn-primary">{% trans "New Game"%}</a>
           {% endif %}
+        {% else %}
+          {{ exit.text }}
+          <a href="{% url 'simplechoice:new' %}" class="btn btn-primary">{% trans "New Game"%}</a>
         {% endif %}
       </div>
     </div>

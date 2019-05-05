@@ -135,14 +135,15 @@ class Game(models.Model):
             self.save()
             return game_decision
 
-        print('No more decisions. Find exit event')
-        events = self.get_event_query()
-        event = events.filter(kind='victory').first()
-        if event:
-            self.events.create(event=event)
-            self.status = 3
-        else:
-            self.status = 5
+        print('No more decisions. finished game')
+        #events = self.get_event_query()
+        #event = events.filter(kind='victory').first()
+        #if event:
+        #    self.events.create(event=event)
+        #    self.status = 3
+        #else:
+        #    self.status = 5
+        self.status = 3
         self.save()
         return None
 

@@ -35,8 +35,6 @@ LANGUAGES = (
 
 
 LOGIN_URL = 'alpha:login'
-LOGIN_REDIRECT_URL = 'simplechoice:project-list'
-
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
@@ -46,6 +44,13 @@ ALLOWED_HOSTS = []
 
 
 SIMPLECHOICE = {
+    'EXITS': [
+        {
+            'name': 'Simple',
+            'text': 'Du hattes eine erfülltes Leben, aber es ist nichts spannendes pasiert',
+            'min': 0, 'max': 1,
+        }
+    ]
 
 }
 
