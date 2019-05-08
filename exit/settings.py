@@ -23,7 +23,7 @@ LOCALE_PATHS = (
 
 
 LANGUAGE_CODE = 'en'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Berlin'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -33,26 +33,9 @@ LANGUAGES = (
     ('de', _('German')),
 )
 
-
-LOGIN_URL = 'alpha:login'
-
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-
-
 ALLOWED_HOSTS = []
-
-
-SIMPLECHOICE = {
-    'EXITS': [
-        {
-            'name': 'Simple',
-            'text': 'Du hattes eine erfülltes Leben, aber es ist nichts spannendes pasiert',
-            'min': 0, 'max': 1,
-        }
-    ]
-
-}
 
 # Application definition
 

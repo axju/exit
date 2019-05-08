@@ -1,41 +1,50 @@
 ====
 EXIT
 ====
-This is a small Django project. It build a basic for a multiple choice game.
+This is a small Django project. The basic for a multiple choice game.
 
 Setup
 -----
 Linux::
 
-  python3 -m venv venv
-  source venv/bin/activate
+  $ python3 -m venv venv
+  $ source venv/bin/activate
 
 Windows::
 
-  python -m venv venv
-  venv\Scripts\activate
+  $ python -m venv venv
+  $ venv\Scripts\activate
 
 Install requirements::
 
-  python -m pip install --upgrade pip
-  python -m pip install -r requirements.txt
+  $ python -m pip install --upgrade pip
+  $ python -m pip install -r requirements.txt
 
 Setup Django::
 
-  python exit\manage.py migrate
-  python exit\manage.py createsuperuser
+  $ python manage.py migrate
 
 Import some game data::
 
-  python .\exit\manage.py import .\examples\ --delete
+  $ python manage.py import examples --delete
 
-Run development server::
+Create super user (Optional)::
 
-  python exit\manage.py runserver
+  $ python manage.py createsuperuser
 
 Tools
 -----
+Run development server::
+
+  $ python manage.py runserver
+
 Check unused imported::
 
-  python -m pip install flake8
-  flake8 --select F401 exit
+  $ python -m pip install flake8
+  $ flake8 --select F401 exit
+
+Tests::
+
+  $ python -m pip install --upgrade tox
+  $ python tests/manage.py test simplechoice
+  $ tox
