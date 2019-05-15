@@ -51,7 +51,12 @@
 
       <footer class="footer">
         <div class="container">
-          <span class="text-muted">&copy; 2019 exit &middot; <a href="#">{% trans "Privacy"%}</a> &middot; <a href="#">{% trans "Help"%}</a></span>
+          <span class="text-muted">&copy; 2019 exit &middot;
+            <a href="{% url 'simplechoice:index' %}">{% trans "Game"%}</a> &middot;
+            <a href="{% url 'simplechoice:list' %}">{% trans "Hall of fame"%}</a> &middot;
+            <a href="#">{% trans "Privacy"%}</a> &middot;
+            <a href="#">{% trans "Help"%}</a>
+          </span>
         </div>
       </footer>
     </main>

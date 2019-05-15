@@ -1,0 +1,80 @@
+{
+  "levents": {
+  	"Drogen": [
+  		{
+  			"value": 3,
+  			"score": -5,
+        "name": "Raucher",
+  			"text": "Du rauchst täglich mehrere Zigaretten und kannst damit auch nicht aufhören. Du bist süchtig!"
+  		},
+  		{
+  			"value": 5,
+  			"score": -5,
+        "name": "Blackout",
+  			"text": "Auf einer Party hast du so viel getrunken, das du dich an nichts mehr erinnerst. Doch du hattest bestimmt sehr viel Spaß."
+  		}
+  	],
+
+  	"Fitness": [
+  		{
+  			"value": 2,
+  			"score": 2,
+        "name": "Sportskanone",
+  			"text": "Du gewinnst die bundes jugend Spiele in deiner Schule."
+  		}
+  	]
+  },
+  "ldecisions": [
+    {
+      "level": 2,
+      "question": "Frage 1",
+      "answers": [
+        {
+          "name": "Drogen",
+          "attribute": "Drogen",
+          "value": 2
+        },
+        {
+          "name": "Fitness",
+          "attribute": "Fitness",
+          "value": 2
+        }
+      ]
+    },
+
+    {
+      "level": 2,
+      "question": "Frage 2",
+      "answers": [
+        {
+          "name": "Drogen",
+          "attribute": "Drogen",
+          "value": 2
+        },
+        {
+          "name": "Fitness",
+          "attribute": "Fitness",
+          "value": 2
+        }
+      ]
+    },
+
+    {
+      "level": 3,
+      "question": "Frage 3",
+      "answers": [
+        {
+          "name": "Drogen",
+          "attribute": "Drogen",
+          "value": 2
+        },
+        {
+          "name": "Fitness",
+          "attribute": "Fitness",
+          "value": 2
+        }
+      ]
+    }
+
+  ]
+}

@@ -14,14 +14,14 @@
 </h2>
 <div class="float-right text-right">
   <small>Score:</small> <span class="badge badge-success" style="vertical-align: center">{{ game.score }}</span><br>
-  <small>Alter:</small> <span class="badge badge-primary" style="vertical-align: center">{{ game.level }}</span>
+  <small>Level:</small> <span class="badge badge-primary" style="vertical-align: center">{{ game.level }}</span>
 </div>
 {% endblock %}
 
 {% block card-body %}
 <div class="container p-3">
   {% if not game.name %}
-    <p>Event ist ein kleines Spiel. Beantworte die folgende Fragen und gucke wie wit du kommst.</p>
+    <p>EXIT ist ein kleines Spiel. Beantworte die folgende Fragen und gucke wie wit du kommst.</p>
   {% endif %}
 
   {% if form %}
